@@ -1,0 +1,21 @@
+[package]
+name = "iced_aurora"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+iced = { version = "*", default-features = false, features = [
+    "advanced",
+    # "wgpu",
+    "tiny-skia",
+    "canvas",
+    "tokio",
+] }
+voronator = "0.2"
+tracing-subscriber = "0.3"
+maliit = { git = "https://github.com/auroraos-rs/maliit" }
+
+[patch.crates-io]
+winit = { git = "https://github.com/lmaxyz/winit", branch = "aurora" }
+# glutin = { git = "https://github.com/lmaxyz/glutin", branch = "aurora_device_fix_v31" }
+wgpu = { git = "https://github.com/lmaxyz/wgpu", branch = "v19" }
