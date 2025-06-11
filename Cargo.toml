@@ -4,18 +4,35 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-iced = { version = "*", default-features = false, features = [
+iced = { git = "https://github.com/iced-rs/iced", default-features = false, features = [
     "advanced",
     # "wgpu",
     "tiny-skia",
-    "canvas",
-    "tokio",
+    "smol"
+    # "canvas",
+    # "thread-pool",
 ] }
 voronator = "0.2"
 tracing-subscriber = "0.3"
-maliit = { git = "https://github.com/auroraos-rs/maliit" }
 
-[patch.crates-io]
-winit = { git = "https://github.com/lmaxyz/winit", branch = "aurora" }
+[package.metadata.generate-rpm]
+name = "com.lmaxyz.IcedAurora"
+license = "Apache-2.0"
+summary = "Iced Aurora Demo App"
+release = "1"
+url = "https://github.com/lmaxyz/iced_aurora"
+assets = [
+    { source = "target/armv7-unknown-linux-gnueabihf/release/iced_aurora", dest = "/usr/bin/com.lmaxyz.IcedAurora", mode = "755" },
+    { source = "rpm/com.lmaxyz.IcedAurora.desktop", dest = "/usr/share/applications/com.lmaxyz.IcedAurora.desktop", mode = "644" },
+    { source = "rpm/icons/86x86/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/86x86/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
+    { source = "rpm/icons/108x108/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/108x108/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
+    { source = "rpm/icons/128x128/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/128x128/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
+    { source = "rpm/icons/172x172/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/172x172/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
+]
+
+[patch."https://github.com/iced-rs/winit"]
+winit = { git = "https://github.com/lmaxyz/winit", branch = "aurora"}
+# winit = { path = "../../rust/winit" }
+# iced = { path = "../../rust/iced" }
 # glutin = { git = "https://github.com/lmaxyz/glutin", branch = "aurora_device_fix_v31" }
-wgpu = { git = "https://github.com/lmaxyz/wgpu", branch = "v19" }
+# wgpu = { git = "https://github.com/lmaxyz/wgpu", branch = "v19" }
