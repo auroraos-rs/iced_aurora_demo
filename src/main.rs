@@ -1,74 +1,23 @@
 use iced::advanced::text::highlighter::PlainText;
 use iced::widget::{
-    button, center, checkbox, column, container, horizontal_rule, pick_list, progress_bar, row,
-    scrollable, slider, text, text_editor, text_input, toggler, vertical_rule, vertical_space,
+    button, center, checkbox, column, container, pick_list, progress_bar, row, space,
+    scrollable, slider, text, text_editor, text_input, toggler, rule,
     TextEditor,
 };
-use iced::window::Settings;
 use iced::{keyboard, Task};
 use iced::{Center, Element, Fill, Subscription, Theme};
 
 pub fn main() -> iced::Result {
     iced::application(Styling::new, Styling::update, Styling::view)
         .subscription(Styling::subscription)
-        .scale_factor(|_| 1.5)
-        .window(Settings {
+        .scale_factor(|_| 2.0)
+        .window(iced::window::Settings {
             fullscreen: true,
             ..Default::default()
         })
         .theme(Styling::theme).run()
 }
 
-#[derive(Debug, Clone)]
-enum MaliitMessage {
-    InputChanged(String),
-    ButtonPressed,
-    // TextInputPressed,
-}
-
-struct MaliitInput {
-    input_value: String,
-    toggle: bool,
-}
-
-impl MaliitInput {
-    fn new() -> Self {
-        Self {
-            input_value: String::new(),
-            toggle: false,
-        }
-    }
-
-    fn update(&mut self, message: MaliitMessage) {
-        match message {
-            MaliitMessage::InputChanged(value) => self.input_value = value,
-            // MaliitMessage::TextInputPressed => {
-            //     self.input_method.show();
-            // }
-            MaliitMessage::ButtonPressed => {
-                self.toggle = !self.toggle;
-            }
-        }
-    }
-
-    fn view(&self) -> Element<Message> {
-        let input = text_input("Maliit input...", &self.input_value)
-            .padding(20)
-            .width(iced::Length::Fill)
-            .on_input(|s| Message::MaliitMessage(MaliitMessage::InputChanged(s)));
-
-        let btn = button(text("Button")).on_press(Message::MaliitMessage(MaliitMessage::ButtonPressed));
-
-        container(
-            row![container(input), container(btn)]
-                .spacing(20)
-                .align_y(Center),
-        )
-        .into()
-    }
-}
-
-// #[derive(Default)]
 struct Styling {
     theme: Theme,
     input_value: String,
@@ -76,7 +25,6 @@ struct Styling {
     slider_value: f32,
     checkbox_value: bool,
     toggler_value: bool,
-    maliit_input: MaliitInput,
 }
 
 #[derive(Debug, Clone)]
@@ -90,21 +38,18 @@ enum Message {
     TogglerToggled(bool),
     PreviousTheme,
     NextTheme,
-    MaliitMessage(MaliitMessage),
 }
 
 impl Styling {
     fn new() -> (Self, Task<Message>) {
-        let maliit_input = MaliitInput::new();
         (
             Self {
-                theme: Theme::default(),
+                theme: Theme::Dark,
                 input_value: String::new(),
                 editor_content: text_editor::Content::default(),
                 slider_value: 0.0,
                 checkbox_value: false,
                 toggler_value: false,
-                maliit_input,
             },
             Task::none(),
         )
@@ -149,13 +94,10 @@ impl Styling {
                     };
                 }
             }
-            Message::MaliitMessage(msg) => {
-                self.maliit_input.update(msg);
-            }
         }
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<'_, Message> {
         let choose_theme = column![
             text("Theme:"),
             pick_list(Theme::ALL, Some(&self.theme), Message::ThemeChanged).width(Fill),
@@ -205,16 +147,15 @@ impl Styling {
 
         let scrollable = scrollable(column![
             "Scroll me!",
-            vertical_space().height(800),
+            space().height(800),
             "You did it!"
         ])
         .width(Fill)
         .height(100);
 
         let content = column![
-            container(self.maliit_input.view()),
             choose_theme,
-            horizontal_rule(38),
+            rule::horizontal(5),
             text_input,
             text_editor,
             row![primary, success, warning, danger]
@@ -224,7 +165,7 @@ impl Styling {
             progress_bar(),
             row![
                 scrollable,
-                vertical_rule(38),
+                rule::vertical(5),
                 column![checkbox, toggler].spacing(20)
             ]
             .spacing(10)
