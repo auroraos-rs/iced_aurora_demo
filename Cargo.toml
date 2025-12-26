@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-iced = { git = "https://github.com/iced-rs/iced", branch = "master", default-features = false, features = [
+iced = { version="0.14.0", default-features = false, features = [
     "advanced",
-    # "wgpu",
-    "tiny-skia",
+    "wgpu",
+    # "tiny-skia",
     "smol",
     "canvas",
+    "wayland"
     # "thread-pool",
 ] }
 voronator = "0.2"
@@ -22,7 +23,7 @@ summary = "Iced Aurora Demo App"
 release = "1"
 url = "https://github.com/lmaxyz/iced_aurora"
 assets = [
-    { source = "target/aarch64-unknown-linux-gnu/release/iced_aurora", dest = "/usr/bin/com.lmaxyz.IcedAurora", mode = "755" },
+    { source = "target/release/iced_aurora", dest = "/usr/bin/com.lmaxyz.IcedAurora", mode = "755" },
     { source = "rpm/com.lmaxyz.IcedAurora.desktop", dest = "/usr/share/applications/com.lmaxyz.IcedAurora.desktop", mode = "644" },
     { source = "rpm/icons/86x86/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/86x86/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
     { source = "rpm/icons/108x108/com.lmaxyz.IcedAurora.png", dest = "/usr/share/icons/hicolor/108x108/apps/com.lmaxyz.IcedAurora.png", mode = "644" },
@@ -37,5 +38,9 @@ assets = [
 # glutin = { git = "https://github.com/lmaxyz/glutin", branch = "aurora_device_fix_v31" }
 # wgpu = { git = "https://github.com/lmaxyz/wgpu", branch = "v19" }
 
-[patch."https://github.com/iced-rs/winit"]
+# [patch."https://github.com/iced-rs/winit"]
+# winit = { git = "https://github.com/lmaxyz/winit", branch="iced_aurora"}
+
+[patch.crates-io]
 winit = { git = "https://github.com/lmaxyz/winit", branch="iced_aurora"}
+# wgpu = { git = "https://github.com/gfx-rs/wgpu" }

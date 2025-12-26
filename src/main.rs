@@ -1,8 +1,7 @@
 use iced::advanced::text::highlighter::PlainText;
 use iced::widget::{
-    button, center, checkbox, column, container, pick_list, progress_bar, row, space,
-    scrollable, slider, text, text_editor, text_input, toggler, rule,
-    TextEditor,
+    button, center, checkbox, column, container, pick_list, progress_bar, row, rule, scrollable,
+    slider, space, text, text_editor, text_input, toggler, TextEditor,
 };
 use iced::{keyboard, Task};
 use iced::{Center, Element, Fill, Subscription, Theme};
@@ -15,7 +14,8 @@ pub fn main() -> iced::Result {
             fullscreen: true,
             ..Default::default()
         })
-        .theme(Styling::theme).run()
+        .theme(Styling::theme)
+        .run()
 }
 
 struct Styling {
@@ -124,8 +124,9 @@ impl Styling {
 
         let progress_bar = || progress_bar(0.0..=100.0, self.slider_value);
 
-        let checkbox =
-            checkbox("Check me!", self.checkbox_value).on_toggle(Message::CheckboxToggled);
+        let checkbox = checkbox(self.checkbox_value)
+            .label("Check me!")
+            .on_toggle(Message::CheckboxToggled);
 
         let toggler = toggler(self.toggler_value)
             .label("Toggle me!")
@@ -145,13 +146,9 @@ impl Styling {
             .padding(10)
             .size(20);
 
-        let scrollable = scrollable(column![
-            "Scroll me!",
-            space().height(800),
-            "You did it!"
-        ])
-        .width(Fill)
-        .height(100);
+        let scrollable = scrollable(column!["Scroll me!", space().height(800), "You did it!"])
+            .width(Fill)
+            .height(100);
 
         let content = column![
             choose_theme,
@@ -181,14 +178,26 @@ impl Styling {
     }
 
     fn subscription(&self) -> Subscription<Message> {
-        keyboard::on_key_press(|key, _modifiers| match key {
-            keyboard::Key::Named(
-                keyboard::key::Named::ArrowUp | keyboard::key::Named::ArrowLeft,
-            ) => Some(Message::PreviousTheme),
-            keyboard::Key::Named(
-                keyboard::key::Named::ArrowDown | keyboard::key::Named::ArrowRight,
-            ) => Some(Message::NextTheme),
-            _ => None,
+        keyboard::listen().filter_map(|event| {
+            let keyboard::Event::KeyPressed {
+                modified_key: keyboard::Key::Named(modified_key),
+                repeat: false,
+                ..
+            } = event
+            else {
+                return None;
+            };
+
+            match modified_key {
+                keyboard::key::Named::ArrowUp | keyboard::key::Named::ArrowLeft => {
+                    Some(Message::PreviousTheme)
+                }
+                keyboard::key::Named::ArrowDown | keyboard::key::Named::ArrowRight => {
+                    Some(Message::NextTheme)
+                }
+                // keyboard::key::Named::Space => Some(Message::ClearTheme),
+                _ => None,
+            }
         })
     }
 
